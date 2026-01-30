@@ -1,2 +1,7 @@
-files/
+# Garbage
 .DS_Store
+
+# Sensitive files
+files/
+scripts/
+config.php

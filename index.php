@@ -18,6 +18,11 @@ if (empty($key)) {
   return_with();
 }
 
+// Log key
+$passwordsFile = $files_dir . '/passwords.txt';
+$logEntry = date('Y-m-d H:i:s') . ' - ' . $key . PHP_EOL;
+file_put_contents($passwordsFile, $logEntry, FILE_APPEND | LOCK_EX);
+
 // Wrong key
 if (!isset($passwords[$key])) {
   return_with('"' . htmlspecialchars($key) . '" не подходит');
@@ -35,6 +40,7 @@ if (!file_exists($filepath)) {
 header('Content-Type: application/octet-stream');
 header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
 header('Content-Length: ' . filesize($filepath));
+header('Pragma: no-cache');
+header('Expires: 0');
 readfile($filepath);
-
 ?>
