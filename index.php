@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET' || !isset($_GET['key'])) {
 }
 
 $key = trim($_GET['key']);
+$is_set = isset($passwords[strtolower($key)]);
 
 // Empty key
 if (empty($key)) {
@@ -20,11 +21,20 @@ if (empty($key)) {
 
 // Log key
 $passwordsFile = $files_dir . '/passwords.txt';
-$logEntry = date('Y-m-d H:i:s') . ' - ' . $key . PHP_EOL;
+$status = $is_set ? 'Y' : 'N';
+$logEntry = date('Y-m-d H:i:s') . ' - ' . $status . ' - ' . $key . PHP_EOL;
 file_put_contents($passwordsFile, $logEntry, FILE_APPEND | LOCK_EX);
 
+// Lower for future
+$key = strtolower($key);
+
+// Len
+if ($key == 'len') {
+  return_with('Ключей: ' . count($passwords));
+}
+
 // Wrong key
-if (!isset($passwords[$key])) {
+if (!$is_set) {
   return_with('"' . htmlspecialchars($key) . '" не подходит');
 }
 
@@ -33,6 +43,10 @@ $filepath = $files_dir . $filename;
 
 // No file
 if (!file_exists($filepath)) {
+  $passwordsFile = $files_dir . '/errors.txt';
+  $logEntry = date('Y-m-d H:i:s') . ' - ' . $key . ' - ' . $filename . PHP_EOL;
+  file_put_contents($passwordsFile, $logEntry, FILE_APPEND | LOCK_EX);
+
   return_with(htmlspecialchars($filename) . ' не найден');
 }
 
