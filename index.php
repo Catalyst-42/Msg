@@ -32,14 +32,26 @@ $status = $is_set ? 'Y' : 'N';
 $log = $status . ' - ' . $key;
 write('logs/passwords.txt', $log);
 
-// Len
-if (strtolower($key) == 'len') {
+// Keys
+if (strtolower($key) == 'keys') {
   return_with('Ключей: ' . count($passwords));
+}
+
+// Helpers
+if (strtolower($key) == 'helpers') {
+  return_with('Подсказок: ' . count($helpers));
 }
 
 // Wrong key
 if (!$is_set) {
-  return_with('"' . htmlspecialchars($key) . '" не подходит');
+  $message = '"' . htmlspecialchars($key) . '" не подходит';
+
+  // Generate helper if you are lucky
+  if (mt_rand(1, 200) == 42) {
+    $message = $helpers[mt_rand(0, count($helpers) - 1)];
+  };
+
+  return_with($message);
 }
 
 $filename = $passwords[strtolower($key)];
