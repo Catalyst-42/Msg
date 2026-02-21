@@ -4,5 +4,7 @@
 # Sensitive files
 files/
 scripts/
+analytics/
+
 config.php
 passwords.txt
