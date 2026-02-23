@@ -1,81 +1,112 @@
 <?php
 require_once 'config.php';
-
-function return_with($message = '') {
-  include 'template.html';
-  exit;
-}
-
-function write($file = '', $message = '') {
-  global $files_dir;
-
-  $file = $files_dir . '/' . $file;
-  $logEntry = date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL;
-  file_put_contents($file, $logEntry, FILE_APPEND | LOCK_EX);
-}
+// require_once 'functions.php';
 
 // Check method
 if ($_SERVER['REQUEST_METHOD'] !== 'GET' || !isset($_GET['key'])) {
   return_with();
 }
 
+// Clean key and define types
 $key = trim($_GET['key']);
-$is_set = isset($passwords[$key]);
+$key_types = [];
 
-// Empty key
 if (empty($key)) {
+  array_push($key_types, 'empty');
+}
+
+if (str_starts_with($key, $skip_log)) {
+  $key = substr($key, strlen($skip_log));
+  array_push($key_types, 'skip_log');
+}
+
+if ($key === $master_key) {
+  array_push($key_types, 'master');
+}
+
+if ($key === $debug_key) {
+  array_push($key_types, 'debug');
+}
+
+if (isset($passwords[$key])) {
+  array_push($key_types, 'key');
+}
+
+else if (isset($dynamic_passwords[$key])) {
+  array_push($key_types, 'dynamic');
+}
+
+else {
+  array_push($key_types, 'wrong');
+}
+
+// Process key
+$skip_log = in_array('skip_log', $key_types);
+
+if (in_array('empty', $key_types)) {
   return_with();
 }
 
-// Log key
-$status = $is_set ? 'Y' : 'N';
-$log = $status . ' - ' . $key;
-write('logs/passwords.txt', $log);
+if (in_array('master', $key_types)) {
+  // Fallback to random key
+  $fallback_key = array_rand($passwords);
+  $filename = $passwords[$fallback_key];
 
-// Dyamic keys
-// Keys
-if ($key == 'keys') {
-  return_with('Ключей: ' . count($passwords));
+  check_file($filename);
+
+  write('logs/passwords.log', 'M - ' . $fallback_key);
+  return_file($filename);
 }
 
-// Helpers
-if ($key == 'helpers') {
-  return_with('Подсказок: ' . count($helpers));
+if (in_array('debug', $key_types)) {
+  // Fallback on random key type
+  if (mt_rand(1, 100) == 1) {
+    $key_types = ['key'];
+    $key = array_rand($passwords);
+  }
+  else if (mt_rand(1, 100) == 1) {
+    $key_types = ['dynamic'];
+    $key = array_rand($dynamic_passwords);
+  } 
+  else {
+    $key_types = ['wrong'];
+  }
+
+  // The fallback key will be processed next
+  // Logging disabled by $skip_log = true
+  $skip_log = true;
 }
 
-// Help
-if ($key == 'help') {
-  $message = $helpers[mt_rand(0, count($helpers) - 1)];
-  return_with($message);
+if (in_array('key', $key_types)) {
+  $filename = $passwords[$key];
+
+  check_file($filename);
+
+  write('logs/passwords.log', 'Y' . ' - ' . $key);
+  return_file($filename, $files_dir);
 }
 
-// Wrong key
-if (!$is_set) {
-  $message = '"' . htmlspecialchars($key) . '" не подходит';
+if (in_array('dynamic', $key_types)) {
+  $dynamic_result = $dynamic_passwords[$key]();
 
-  // Generate helper if you are lucky
-  if (mt_rand(1, 200) == 42) {
-    $message = $helpers[mt_rand(0, count($helpers) - 1)];
+  write('logs/passwords.log', 'D' . ' - ' . $key . ' - ' . $dynamic_result['log']);
+  $dynamic_result['function']();
+}
+
+if (in_array('wrong', $key_types)) {
+  // Random help
+  if (mt_rand(1, 50) == 28) {
+    $random_help = $helpers[mt_rand(0, count($helpers) - 1)];
+
+    write('logs/passwords.log', 'H' . ' - ' . $random_help);
+    return_with($random_help);
   };
 
+  // Or wrong message
+  $message = '"' . htmlspecialchars($key) . '" не подходит';
+
+  write('logs/passwords.log', 'N' . ' - ' . $key);
   return_with($message);
 }
 
-$filename = $passwords[$key];
-$filepath = $files_dir . $filename;
-
-// No file
-if (!file_exists($filepath)) {
-  $log = $key . ' - ' . $filename;
-  write('logs/errors.txt', $log);
-  return_with(htmlspecialchars($filename) . ' не найден');
-}
-
-// Download file
-header('Content-Type: application/octet-stream');
-header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
-header('Content-Length: ' . filesize($filepath));
-header('Pragma: no-cache');
-header('Expires: 0');
-readfile($filepath);
 ?>

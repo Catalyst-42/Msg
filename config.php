@@ -1,0 +1,36 @@
+<?php
+require_once 'functions.php';
+
+direct_access_gate('config.php', 'how easy');
+
+// Define configuration
+$files_dir = __DIR__ . '/files/';
+
+$skip_log = 'skip_log';
+
+$debug_key = 'debug_key';
+
+$master_key = 'master_key';
+
+$helpers = [
+  'helper',
+
+];
+
+$passwords = [
+  'key' => 'file',
+];
+
+$dynamic_passwords = [
+  'dynamic_key' => function() use ($passwords) {
+    $log = 'log';
+    $payload = function() { };
+
+    return [
+      'log' => $message,
+      'function' => $payload,
+    ];
+  },
+];
+
+?>
