@@ -1,6 +1,6 @@
 <?php
 
-direct_access_gate('functions.php', 'f(x) = x^2 + 2x + 1');
+direct_access_gate('functions.php', 'f(x, y, z) = cos(x)*sin(y) + cos(y)*sin(z) + cos(z)*sin(x) = 0');
 
 function direct_access_gate($filename, $message) {
     $active_file = basename($_SERVER['SCRIPT_FILENAME'] ?? '');
