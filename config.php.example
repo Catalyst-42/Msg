@@ -28,7 +28,7 @@ $dynamic_passwords = [
 
     return [
       'log' => $message,
-      'function' => $payload,
+      'payload' => $payload,
     ];
   },
 ];

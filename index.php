@@ -90,7 +90,7 @@ if (in_array('dynamic', $key_types)) {
   $dynamic_result = $dynamic_passwords[$key]();
 
   write('logs/passwords.log', 'D' . ' - ' . $key . ' - ' . $dynamic_result['log']);
-  $dynamic_result['function']();
+  $dynamic_result['payload']();
 }
 
 if (in_array('wrong', $key_types)) {
