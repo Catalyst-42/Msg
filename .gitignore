@@ -6,5 +6,4 @@ files/
 scripts/
 analytics/
 
-config.php
-passwords.txt
+/config.php

@@ -26,7 +26,9 @@ function write($file = '', $message = '') {
 }
 
 function return_with($message = '') {
-  include 'template.html';
+  global $files_dir, $template;
+
+  include $files_dir . '/' . $template;
   exit;
 }
 
@@ -37,7 +39,7 @@ function check_file($filename) {
   // Stub on missing file
   if (!file_exists($filepath)) {
     write('logs/errors.log', 'F' . ' - ' . $filename);
-    return_with(htmlspecialchars($filename) . ' не найден');
+    return_with(htmlspecialchars(basename($filename)) . ' не найден');
   }
 }
 

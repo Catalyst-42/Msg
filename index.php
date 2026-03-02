@@ -7,6 +7,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET' || !isset($_GET['key'])) {
   return_with();
 }
 
+// Check template if exists
+if (isset($_GET['template']) && isset($templates[$_GET['template']])) {
+  $template = $templates[$_GET['template']];
+}
+
 // Clean key and define types
 $key = trim($_GET['key']);
 $key_types = [];
@@ -34,6 +39,10 @@ if (isset($passwords[$key])) {
 
 else if (isset($dynamic_passwords[$key])) {
   array_push($key_types, 'dynamic');
+}
+
+else if (isset($templates[$key])) {
+  array_push($key_types, 'template');
 }
 
 else {
@@ -83,7 +92,7 @@ if (in_array('key', $key_types)) {
   check_file($filename);
 
   write('logs/passwords.log', 'Y' . ' - ' . $key);
-  return_file($filename, $files_dir);
+  return_file($filename);
 }
 
 if (in_array('dynamic', $key_types)) {
@@ -91,6 +100,13 @@ if (in_array('dynamic', $key_types)) {
 
   write('logs/passwords.log', 'D' . ' - ' . $key . ' - ' . $dynamic_result['log']);
   $dynamic_result['payload']();
+}
+
+if (in_array('template', $key_types)) {
+  $template = $templates[$key];
+
+  write('logs/passwords.log', 'T' . ' - ' . $key);
+  return_with('Шаблон "' . $key . '" активирован');
 }
 
 if (in_array('wrong', $key_types)) {
