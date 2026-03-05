@@ -51,6 +51,7 @@ else {
 
 // Process key
 $skip_log = in_array('skip_log', $key_types);
+$change_template = false;
 
 if (in_array('empty', $key_types)) {
   return_with();
@@ -104,6 +105,7 @@ if (in_array('dynamic', $key_types)) {
 
 if (in_array('template', $key_types)) {
   $template = $templates[$key];
+  $change_template = true;
 
   write('logs/passwords.log', 'T' . ' - ' . $key);
   return_with('Шаблон "' . $key . '" активирован');

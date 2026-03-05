@@ -26,7 +26,22 @@ function write($file = '', $message = '') {
 }
 
 function return_with($message = '') {
-  global $files_dir, $template;
+  global $files_dir, $change_template, $template;
+
+  $is_ajax = (
+    isset($_SERVER['HTTP_X_REQUESTED_WITH'])
+    &&
+    strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'
+  );
+
+  if ($is_ajax) {
+    if ($change_template) {
+      header('X-Template-Change: true');
+    }
+
+    echo $message;
+    exit;
+  }
 
   include $files_dir . '/' . $template;
   exit;
