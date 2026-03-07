@@ -29,6 +29,10 @@ if ($key === $master_key) {
   array_push($key_types, 'master');
 }
 
+if ($key === $graph_key) {
+  array_push($key_types, 'graph');
+}
+
 if ($key === $debug_key) {
   array_push($key_types, 'debug');
 }
@@ -66,6 +70,13 @@ if (in_array('master', $key_types)) {
 
   write('logs/passwords.log', 'M - ' . $fallback_key);
   return_file($filename);
+}
+
+if (in_array('graph', $key_types)) {
+
+  write('logs/passwords.log', 'G - ' . $key);
+  include $files_dir . '/' . $graph_template;
+  exit;
 }
 
 if (in_array('debug', $key_types)) {
