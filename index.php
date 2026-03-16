@@ -37,11 +37,11 @@ if ($key === $debug_key) {
   array_push($key_types, 'debug');
 }
 
-if (isset($passwords[$key])) {
+if (isset($keys[$key])) {
   array_push($key_types, 'key');
 }
 
-else if (isset($dynamic_passwords[$key])) {
+else if (isset($dynamic_keys[$key])) {
   array_push($key_types, 'dynamic');
 }
 
@@ -63,8 +63,8 @@ if (in_array('empty', $key_types)) {
 
 if (in_array('master', $key_types)) {
   // Fallback to random key
-  $fallback_key = array_rand($passwords);
-  $filename = $passwords[$fallback_key];
+  $fallback_key = array_rand($keys);
+  $filename = $keys[$fallback_key];
 
   check_file($filename);
 
@@ -73,6 +73,7 @@ if (in_array('master', $key_types)) {
 }
 
 if (in_array('graph', $key_types)) {
+  header('X-Template-Change: true');
 
   write('logs/passwords.log', 'G - ' . $key);
   include $files_dir . '/' . $graph_template;
@@ -83,11 +84,11 @@ if (in_array('debug', $key_types)) {
   // Fallback on random key type
   if (mt_rand(1, 100) == 1) {
     $key_types = ['key'];
-    $key = array_rand($passwords);
+    $key = array_rand($keys);
   }
   else if (mt_rand(1, 100) == 1) {
     $key_types = ['dynamic'];
-    $key = array_rand($dynamic_passwords);
+    $key = array_rand($dynamic_keys);
   } 
   else {
     $key_types = ['wrong'];
@@ -99,7 +100,7 @@ if (in_array('debug', $key_types)) {
 }
 
 if (in_array('key', $key_types)) {
-  $filename = $passwords[$key];
+  $filename = $keys[$key];
 
   check_file($filename);
 
@@ -108,7 +109,7 @@ if (in_array('key', $key_types)) {
 }
 
 if (in_array('dynamic', $key_types)) {
-  $dynamic_result = $dynamic_passwords[$key]();
+  $dynamic_result = $dynamic_keys[$key]();
 
   write('logs/passwords.log', 'D' . ' - ' . $key . ' - ' . $dynamic_result['log']);
   $dynamic_result['payload']();

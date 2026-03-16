@@ -39,13 +39,13 @@ $helpers = [
 ];
 
 // Here files are described relative to $files_dir
-$passwords = [
+$keys = [
   'key' => 'file',
   // ...
 ];
 
-$dynamic_passwords = [
-  'dynamic_key' => function() use ($passwords) {
+$dynamic_keys = [
+  'dynamic_key' => function() use ($keys) {
     $log = 'log';
     $payload = function() { };
 

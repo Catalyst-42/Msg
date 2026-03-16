@@ -282,17 +282,17 @@ define('ANOTHER_KEYS', 4);           // All the system keys
         <div class="list-item">
           <span class="node-type keys">K</span>
           <span class="node-name">Ключи</span>
-          <span class="node-group"><?= count($passwords) ?></span>
+          <span class="node-group"><?= count($keys) ?></span>
         </div>
         <div class="list-item">
           <span class="node-type files">F</span>
           <span class="node-name">Файлы</span>
-          <span class="node-group"><?= count(array_unique(array_values($passwords))) ?></span>
+          <span class="node-group"><?= count(array_unique(array_values($keys))) ?></span>
         </div>
         <div class="list-item">
           <span class="node-type dynamic_keys">D</span>
           <span class="node-name">Динамические ключи</span>
-          <span class="node-group"><?= count($dynamic_passwords) ?></span>
+          <span class="node-group"><?= count($dynamic_keys) ?></span>
         </div>
         <div class="list-item">
           <span class="node-type another">A</span>
@@ -320,8 +320,8 @@ define('ANOTHER_KEYS', 4);           // All the system keys
   <script>
     (function() {
       // Data from PHP
-      const passwords = <?= json_encode($passwords) ?>;
-      const dynamicPasswords = <?= json_encode(array_keys($dynamic_passwords)) ?>;
+      const passwords = <?= json_encode($keys) ?>;
+      const dynamicPasswords = <?= json_encode(array_keys($dynamic_keys)) ?>;
       const templates = <?= json_encode($templates) ?>;
       const helpers = <?= json_encode($helpers) ?>;
       const meta = <?= json_encode($meta) ?>;
