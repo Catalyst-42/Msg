@@ -72,4 +72,16 @@ function return_file($filename) {
   exit;
 }
 
+function format_bytes($bytes) {
+    $units = ['Б', 'КБ', 'МБ', 'ГБ'];
+    $index = 0;
+
+    while ($bytes >= 1024 && $index < count($units) - 1) {
+        $bytes /= 1024;
+        $index++;
+    }
+
+    return round($bytes) . ' ' . $units[$index];
+}
+
 ?>
