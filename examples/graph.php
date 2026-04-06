@@ -25,7 +25,7 @@ define('COLOR_BASE0F', '#FF9E64'); // Keys group
 define('COLOR_BASE10', '#F7768E'); // Dynamic keys group
 define('COLOR_BASE11', '#787C99'); // Cluster text
 
-define('ANOTHER_KEYS', 4);           // All the system keys
+define('ANOTHER_KEYS', 0);           // All the system keys
 ?>
 
 <!DOCTYPE html>
@@ -394,6 +394,14 @@ define('ANOTHER_KEYS', 4);           // All the system keys
         addNode(`a_${key}`, key, 'another', 'hexagon', value)
       });
 
+      meta.forEach(([key, value]) => {
+        if (key.startsWith('a_')) {
+          if (!nodeSet.has(key)) {
+            addNode(key, key.slice(2), 'another', 'hexagon', value.slice(2));
+          }
+        }
+      });
+
       // Files
       files.forEach(file =>
         addNode(`f_${file}`, basename(file), 'files', 'box', file)
@@ -418,7 +426,7 @@ define('ANOTHER_KEYS', 4);           // All the system keys
       helpers.forEach(helper =>
         addNode(`h_${helper}`, helper, 'helpers', 'box', helper)
       );
-
+ 
       // Add edges
       // Key to file connections
       Object.entries(passwords).forEach(([key, file]) => {
@@ -442,6 +450,9 @@ define('ANOTHER_KEYS', 4);           // All the system keys
 
       // Meta connections
       meta.forEach(([from, to]) => {
+        if (to.startsWith('l_'))
+          return;
+
         if (nodeSet.has(from) && nodeSet.has(to)) {
           edges.push({
             from,

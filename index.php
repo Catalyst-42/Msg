@@ -2,18 +2,20 @@
 require_once 'config.php';
 // require_once 'functions.php';
 
+// Check template if exists
+$template_key = $_GET['template'] ?? $_POST['template'] ?? null;
+if (isset($template_key)) {
+  $template = $templates[$template_key];
+}
+
 // Check method
-if ($_SERVER['REQUEST_METHOD'] !== 'GET' || !isset($_GET['key'])) {
+$key = $_GET['key'] ?? $_POST['key'] ?? null;
+if (!isset($key)) {
   return_with();
 }
 
-// Check template if exists
-if (isset($_GET['template']) && isset($templates[$_GET['template']])) {
-  $template = $templates[$_GET['template']];
-}
-
 // Clean key and define types
-$key = trim($_GET['key']);
+$key = trim($key);
 $key_types = [];
 
 if (empty($key)) {

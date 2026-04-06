@@ -64,10 +64,11 @@ $dynamic_keys = [
 // f - file
 // d - dynamic key
 // a - another
-// m - meta
+// l - label
 
 $meta = [
   ['f_file', 'k_key'],
+  ['a_group', 'l_label'],
   // ...
 ]
 
