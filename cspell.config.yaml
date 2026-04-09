@@ -1,0 +1,13 @@
+version: "0.2"
+language: en,ru
+useGitignore: false
+files:
+  - "**/*"
+ignorePaths:
+  - node_modules/**
+  - .git/**
+dictionaries:
+  - en_us
+  - ru_ru
+allowCompoundWords: true
+minWordLength: 2

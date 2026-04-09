@@ -18,7 +18,7 @@ List of available urls:
 - /config.php
 - /functions.php
 
-To protect app, set up Nginx and fail2ban on server. See config folder for configuration files, that adds functions of bans and resctictions for files and folders. 
+To protect app, set up Nginx and fail2ban on server. See config folder for configuration files, that adds functions of bans and restrictions for files and folders. 
 
 To setup Nginx, add nginx.conf to your sites-available configuration at server level. Also add these instructions in nginx.conf to set up access limit and banlist:
 
