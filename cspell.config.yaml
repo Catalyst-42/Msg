@@ -1,13 +1,15 @@
 version: "0.2"
+enabled: true
 language: en,ru
-useGitignore: false
 files:
   - "**/*"
 ignorePaths:
-  - node_modules/**
-  - .git/**
+  - ".git/**"
+  - "*.ipynb"
 dictionaries:
   - en_us
   - ru_ru
 allowCompoundWords: true
 minWordLength: 2
+useGitignore: false
+caseSensitive: true

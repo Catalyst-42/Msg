@@ -3,14 +3,14 @@
 direct_access_gate('functions.php', 'f(x, y, z) = cos(x)*sin(y) + cos(y)*sin(z) + cos(z)*sin(x) = 0');
 
 function direct_access_gate($filename, $message) {
-    $active_file = basename($_SERVER['SCRIPT_FILENAME'] ?? '');
+  $active_file = basename($_SERVER['SCRIPT_FILENAME'] ?? '');
 
-    // Exit on direct access
-    if ($active_file === $filename) {
-      header('Content-Type: application/json');
-      echo json_encode(['msg' => $message]);
-      exit;
-    }
+  // Exit on direct access
+  if ($active_file === $filename) {
+    header('Content-Type: application/json');
+    echo json_encode(['msg' => $message]);
+    exit;
+  }
 }
 
 function write($file = '', $message = '') {
@@ -73,15 +73,19 @@ function return_file($filename) {
 }
 
 function format_bytes($bytes) {
-    $units = ['Б', 'КБ', 'МБ', 'ГБ'];
-    $index = 0;
+  $units = ['Б', 'КБ', 'МБ', 'ГБ'];
+  $index = 0;
 
-    while ($bytes >= 1024 && $index < count($units) - 1) {
-        $bytes /= 1024;
-        $index++;
-    }
+  while ($bytes >= 1024 && $index < count($units) - 1) {
+    $bytes /= 1024;
+    $index++;
+  }
 
-    return round($bytes) . ' ' . $units[$index];
+  return round($bytes) . ' ' . $units[$index];
+}
+
+function choice($array) {
+  return $array[mt_rand(0, count($array) - 1)];
 }
 
 ?>

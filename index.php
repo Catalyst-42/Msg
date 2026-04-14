@@ -128,7 +128,7 @@ if (in_array('template', $key_types)) {
 if (in_array('wrong', $key_types)) {
   // Random help
   if (mt_rand(1, 50) == 28) {
-    $random_help = $helpers[mt_rand(0, count($helpers) - 1)];
+    $random_help = choice($helpers);
 
     write('logs/passwords.log', 'H' . ' - ' . $random_help);
     return_with($random_help);
