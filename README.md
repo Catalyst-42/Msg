@@ -3,9 +3,10 @@ A PHP Bootstrap web app for storing files by keys and procedures for remote call
 
 For secure, app uses `Nginx` configuration to protect direct access to files and `fail2ban` configuration to ban too active users.
 
+## Images
 ![Lctsy - Capricot](<img/Lctsy - Capricot.png>)
 
-### Deploy
+## Deploy
 Initially you must to create configuration file with defined keys and templates. For examples of this files see `examples` folder. To run app, you minimally should have PHP 8 installed. Base page available with simple PHP server:
 
 ```sh
