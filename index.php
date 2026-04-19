@@ -18,7 +18,7 @@ if (!isset($key)) {
 $key = trim($key);
 $key_types = [];
 
-if (empty($key)) {
+if ($key === '') {
   array_push($key_types, 'empty');
 }
 
@@ -27,32 +27,37 @@ if (str_starts_with($key, $skip_log)) {
   array_push($key_types, 'skip_log');
 }
 
+if (str_starts_with($key, $type_key)) {
+  $key = substr($key, strlen($type_key));
+  array_push($key_types, 'check_type');
+}
+
 if ($key === $master_key) {
-  array_push($key_types, 'master');
+  array_push($key_types, 'master_key');
 }
 
-if ($key === $graph_key) {
-  array_push($key_types, 'graph');
+else if ($key === $graph_key) {
+  array_push($key_types, 'graph_key');
 }
 
-if ($key === $debug_key) {
-  array_push($key_types, 'debug');
+else if ($key === $debug_key) {
+  array_push($key_types, 'debug_key');
 }
 
-if (isset($keys[$key])) {
+else if (isset($keys[$key])) {
   array_push($key_types, 'key');
 }
 
 else if (isset($dynamic_keys[$key])) {
-  array_push($key_types, 'dynamic');
+  array_push($key_types, 'dynamic_key');
 }
 
 else if (isset($templates[$key])) {
-  array_push($key_types, 'template');
+  array_push($key_types, 'template_key');
 }
 
 else {
-  array_push($key_types, 'wrong');
+  array_push($key_types, 'wrong_key');
 }
 
 // Process key
@@ -63,18 +68,26 @@ if (in_array('empty', $key_types)) {
   return_with();
 }
 
-if (in_array('master', $key_types)) {
+if (in_array('check_type', $key_types)) {
+  write('logs/passwords.log', 'D - check - ' . $key);
+  $key_types = array_diff($key_types, ['check_type']);
+
+  return_with('"' . $key .'"' . ' is ' . join(', ', $key_types));
+}
+
+if (in_array('master_key', $key_types)) {
   // Fallback to random key
   $fallback_key = array_rand($keys);
   $filename = $keys[$fallback_key];
 
+  write('logs/passwords.log', 'M - ' . $key);
   check_file($filename);
 
-  write('logs/passwords.log', 'M - ' . $fallback_key);
+  write('logs/passwords.log', 'Y - ' . $fallback_key);
   return_file($filename);
 }
 
-if (in_array('graph', $key_types)) {
+if (in_array('graph_key', $key_types)) {
   header('X-Template-Change: true');
 
   write('logs/passwords.log', 'G - ' . $key);
@@ -82,18 +95,20 @@ if (in_array('graph', $key_types)) {
   exit;
 }
 
-if (in_array('debug', $key_types)) {
+if (in_array('debug_key', $key_types)) {
+  write('logs/passwords.log', 'B' . ' - ' . $key);
+
   // Fallback on random key type
   if (mt_rand(1, 100) == 1) {
     $key_types = ['key'];
     $key = array_rand($keys);
   }
   else if (mt_rand(1, 100) == 1) {
-    $key_types = ['dynamic'];
+    $key_types = ['dynamic_key'];
     $key = array_rand($dynamic_keys);
   } 
   else {
-    $key_types = ['wrong'];
+    $key_types = ['wrong_key'];
   }
 
   // The fallback key will be processed next
@@ -110,14 +125,14 @@ if (in_array('key', $key_types)) {
   return_file($filename);
 }
 
-if (in_array('dynamic', $key_types)) {
+if (in_array('dynamic_key', $key_types)) {
   $dynamic_result = $dynamic_keys[$key]();
 
   write('logs/passwords.log', 'D' . ' - ' . $key . ' - ' . $dynamic_result['log']);
   $dynamic_result['payload']();
 }
 
-if (in_array('template', $key_types)) {
+if (in_array('template_key', $key_types)) {
   $template = $templates[$key];
   $change_template = true;
 
@@ -125,7 +140,7 @@ if (in_array('template', $key_types)) {
   return_with('Шаблон "' . $key . '" активирован');
 }
 
-if (in_array('wrong', $key_types)) {
+if (in_array('wrong_key', $key_types)) {
   // Random help
   if (mt_rand(1, 50) == 28) {
     $random_help = choice($helpers);
