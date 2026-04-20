@@ -32,6 +32,16 @@ if (str_starts_with($key, $type_key)) {
   array_push($key_types, 'check_type');
 }
 
+if (str_starts_with($key, $apricot_add)) {
+  $key = substr($key, strlen($apricot_add));
+  array_push($key_types, 'apricot_add');
+}
+
+if (str_starts_with($key, $apricot_sub)) {
+  $key = substr($key, strlen($apricot_sub));
+  array_push($key_types, 'apricot_sub');
+}
+
 if ($key === $master_key) {
   array_push($key_types, 'master_key');
 }
@@ -73,6 +83,42 @@ if (in_array('check_type', $key_types)) {
   $key_types = array_diff($key_types, ['check_type']);
 
   return_with('"' . $key .'"' . ' is ' . join(', ', $key_types));
+}
+
+if (in_array('apricot_add', $key_types)) {
+  write('logs/passwords.log', 'D - ap add - ' . $key);
+  if (!is_numeric($key) || (int)$key != $key || (int)$key <= 0) {
+    return_with('Invalid value');
+  }
+
+  $apricots = $files_dir . 'logs/apricots.log';
+  $message = (int)@file_get_contents($apricots);
+
+  if ($message + $key > $apricot_max) {
+    return_with('Apricots doesn\'t fit in warehouse');
+  }
+
+  $message += $key;
+  file_put_contents($apricots, $message);
+  return_with("Apricots: " . number_format($message));
+}
+
+if (in_array('apricot_sub', $key_types)) {
+  write('logs/passwords.log', 'D - ap sub - ' . $key);
+  if (!is_numeric($key) || (int)$key != $key || (int)$key <= 0) {
+    return_with('Invalid value');
+  }
+
+  $apricots = $files_dir . 'logs/apricots.log';
+  $message = (int)@file_get_contents($apricots);
+
+  if ($message - $key < 0) {
+    return_with('Apricot number can not be negative');
+  }
+
+  $message -= $key;
+  file_put_contents($apricots, $message);
+  return_with("Apricots: " . number_format($message));
 }
 
 if (in_array('master_key', $key_types)) {

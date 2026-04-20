@@ -14,13 +14,21 @@ direct_access_gate('config.php', 'direct_access_gate');
 
 $files_dir = __DIR__ . '/files/';
 
-$skip_log = 'skip_log';
+$skip_log = 'skip_log ';
 
 $debug_key = 'debug_key';
+
+$type_key = 'type_key ';
 
 $master_key = 'master_key';
 
 $graph_key = 'graph_key';
+
+$apricot_max = 0;
+
+$apricot_add = 'apricot_add ';
+
+$apricot_sub = 'apricot_sub ';
 
 $graph_template = 'file';
 

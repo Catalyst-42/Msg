@@ -33,7 +33,7 @@ define('ANOTHER_KEYS', 0);           // All the system keys
 
 <head>
   <!-- The all relations unhidden -->
-  <title>MSG Graph</title>
+  <title>GarFax</title>
   <style>
     body,
     html {
