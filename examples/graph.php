@@ -9,7 +9,7 @@
 // variables in config.php like this:
 //
 // $graph_key = 'graph_key';
-// $graph_template = 'templates/graph.php';
+// $graph_template = 'graph.php';
 //
 
 define('COLOR_BASE00', '#1A1B26'); // Background
@@ -93,6 +93,11 @@ define('ANOTHER_KEYS', 0);           // All the system keys
     }
 
     .list-item .node-type.dynamic_keys {
+      background: <?= COLOR_BASE10 ?>;
+      color: <?= COLOR_BASE00 ?>;
+    }
+
+    .list-item .node-type.action_keys {
       background: <?= COLOR_BASE10 ?>;
       color: <?= COLOR_BASE00 ?>;
     }
@@ -295,7 +300,12 @@ define('ANOTHER_KEYS', 0);           // All the system keys
           <span class="node-group"><?= count($dynamic_keys) ?></span>
         </div>
         <div class="list-item">
-          <span class="node-type another">A</span>
+          <span class="node-type action_keys">A</span>
+          <span class="node-name">Действия</span>
+          <span class="node-group"><?= count($action_keys) ?></span>
+        </div>
+        <div class="list-item">
+          <span class="node-type another">N</span>
           <span class="node-name">Другое</span>
           <span class="node-group"><?= ANOTHER_KEYS ?></span>
         </div>
@@ -321,7 +331,8 @@ define('ANOTHER_KEYS', 0);           // All the system keys
     (function() {
       // Data from PHP
       const passwords = <?= json_encode($keys) ?>;
-      const dynamicPasswords = <?= json_encode(array_keys($dynamic_keys)) ?>;
+      const dynamicKeys = <?= json_encode(array_map('strval', array_keys($dynamic_keys))) ?>;
+      const actionKeys = <?= json_encode(array_map('strval', array_keys($action_keys))) ?>;
       const templates = <?= json_encode($templates) ?>;
       const helpers = <?= json_encode($helpers) ?>;
       const meta = <?= json_encode($meta) ?>;
@@ -391,11 +402,11 @@ define('ANOTHER_KEYS', 0);           // All the system keys
 
       // Another
       another.forEach(([key, value]) => {
-        addNode(`a_${key}`, key, 'another', 'hexagon', value)
+        addNode(`n_${key}`, key, 'another', 'hexagon', value)
       });
 
       meta.forEach(([key, value]) => {
-        if (key.startsWith('a_')) {
+        if (key.startsWith('n_')) {
           if (!nodeSet.has(key)) {
             addNode(key, key.slice(2), 'another', 'hexagon', value.slice(2));
           }
@@ -407,9 +418,14 @@ define('ANOTHER_KEYS', 0);           // All the system keys
         addNode(`f_${file}`, basename(file), 'files', 'box', file)
       );
 
-      // Dynamic passwords
-      dynamicPasswords.forEach(key =>
+      // Dynamic keys
+      dynamicKeys.forEach(key =>
         addNode(`d_${key}`, key, 'dynamic_keys', 'triangle')
+      );
+
+      // Action keys
+      actionKeys.forEach(key =>
+        addNode(`a_${key}`, key, 'action_keys', 'triangle')
       );
 
       // Templates
@@ -544,6 +560,15 @@ define('ANOTHER_KEYS', 0);           // All the system keys
               color: COLORS.BASE05
             }
           },
+          action_keys: {
+            color: {
+              background: COLORS.BASE10,
+              border: COLORS.BASE03
+            },
+            font: {
+              color: COLORS.BASE05
+            }
+          },
           templates: {
             color: {
               background: COLORS.BASE0E,
@@ -606,7 +631,7 @@ define('ANOTHER_KEYS', 0);           // All the system keys
         label: node.label,
         group: node.group,
         type: node.id.split('_')[0],
-        displayName: node.label
+        displayName: node.label,
       }));
 
       // Search function
@@ -640,10 +665,11 @@ define('ANOTHER_KEYS', 0);           // All the system keys
 
         const resultsHtml = results.map((node, index) => {
           const typeLetter = {
-            'a': 'A',
+            'n': 'N',
             'k': 'K',
             'f': 'F',
             'd': 'D',
+            'a': 'A',
             't': 'T',
             'h': 'H',
           } [node.type] || '?';

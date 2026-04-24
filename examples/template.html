@@ -1,21 +1,20 @@
+<!-- 
+
+Example of template.html
+
+In $templates of config.php paths are should be 
+written relatively to the root folder of app
+
+As example if this file is located on root folder,
+then $template can looks like this:
+
+$template = 'template.html';
+$templates = [
+  'default' =>'template.html'
+];
+
+-->
 <!DOCTYPE html>
-  <!-- 
-
-  Example of template.html
-
-  In $templates of config.php paths are should be 
-  written relatively to the root folder of app
-
-  As example if this file is located on root folder,
-  then $template can looks like this:
-
-  $template = 'template.html';
-  $templates = [
-    'default' =>'template.html'
-  ];
-
-  -->
-
 <html lang="ru" data-bs-theme="dark">
 
 <head>
@@ -32,17 +31,16 @@
   <div class="container d-flex justify-content-center align-items-center vh-100 novalidate">
     <form method="GET" action="index.php" autocomplete="off">
       <div class="input-group">
-        <input type="text" name="key" class="form-control" placeholder="Ключ" autocomplete="off" spellcheck="false"
-          autofocus>
+        <input type="text" name="key" class="form-control" placeholder="Ключ" autocomplete="off" spellcheck="false" autofocus>
         <button class="btn btn-primary" type="submit">
           <i class="bi bi-download"></i>
         </button>
       </div>
-      <?php if (!empty($message)): ?>
-      <div class="text-muted small mt-2 text-center">
-        <?php echo $message; ?>
-      </div>
-      <?php endif; ?>
+        <?php if ($message !== ''): ?>
+          <div class="text-muted small mt-2 text-center">
+            <?php echo $message; ?>
+          </div>
+        <?php endif; ?>
     </form>
 
   </div>

@@ -28,11 +28,7 @@ function write($file = '', $message = '') {
 function return_with($message = '') {
   global $files_dir, $change_template, $template;
 
-  $is_ajax = (
-    isset($_SERVER['HTTP_X_REQUESTED_WITH'])
-    &&
-    strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'
-  );
+  $is_ajax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') == 'XMLHttpRequest';
 
   if ($is_ajax) {
     if ($change_template) {
@@ -72,6 +68,7 @@ function return_file($filename) {
   exit;
 }
 
+// Helpers
 function format_bytes($bytes) {
   $units = ['Б', 'КБ', 'МБ', 'ГБ'];
   $index = 0;
@@ -86,6 +83,35 @@ function format_bytes($bytes) {
 
 function choice($array) {
   return $array[mt_rand(0, count($array) - 1)];
+}
+
+function is_natural($value): bool {
+  $int = filter_var($value, FILTER_VALIDATE_INT);
+  return $int !== false && $int > 0;
+}
+
+// Dynamic function helpers
+function create_response($message,  $log = null) {
+  if ($log == null) {
+    $log = $message;
+  }
+
+  return [
+    'log' => $log,
+    'payload' => function () use ($message) {
+      return_with($message);
+    }
+  ];
+}
+
+function redirect($url) {
+  return [
+    'log' => $url,
+    'payload' => function () use ($url) {
+      header("Location: " . $url);
+      exit();
+    }
+  ];
 }
 
 ?>

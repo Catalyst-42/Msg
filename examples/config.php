@@ -10,25 +10,17 @@ direct_access_gate('config.php', 'direct_access_gate');
 // Define configuration
 
 // NOTE: all 'file' values are should be placed in $files_dir
-// and must be contain path relative to that directory
+// and must contain path relative to that directory
 
 $files_dir = __DIR__ . '/files/';
 
-$skip_log = 'skip_log ';
+$skip_log = 'skip_log';
 
 $debug_key = 'debug_key';
-
-$type_key = 'type_key ';
 
 $master_key = 'master_key';
 
 $graph_key = 'graph_key';
-
-$apricot_max = 0;
-
-$apricot_add = 'apricot_add ';
-
-$apricot_sub = 'apricot_sub ';
 
 $graph_template = 'file';
 
@@ -53,7 +45,20 @@ $keys = [
 ];
 
 $dynamic_keys = [
-  'dynamic_key' => function() use ($keys) {
+  'dynamic_key' => function() {
+    $log = 'log';
+    $payload = function() { };
+
+    return [
+      'log' => $log,
+      'payload' => $payload,
+    ];
+  },
+  // ...
+];
+
+$action_keys = [
+  'action_key' => function($params) {
     $log = 'log';
     $payload = function() { };
 
@@ -71,12 +76,13 @@ $dynamic_keys = [
 // k - key
 // f - file
 // d - dynamic key
-// a - another
+// n - another
 // l - label
 
 $meta = [
+  // Here file are described relative to $files_dir
   ['f_file', 'k_key'],
-  ['a_group', 'l_label'],
+  ['n_any', 'l_label'],
   // ...
 ]
 
