@@ -69,8 +69,13 @@ function return_file($filename) {
 }
 
 // Helpers
-function format_bytes($bytes) {
-  $units = ['Б', 'КБ', 'МБ', 'ГБ'];
+function format_bytes($bytes, $lang = 'ru') {
+  if ($lang == 'ru') {
+    $units = ['Б', 'КБ', 'МБ', 'ГБ'];
+  } else {
+    $units = ['B', 'KB', 'MB', 'GB'];
+  }
+
   $index = 0;
 
   while ($bytes >= 1024 && $index < count($units) - 1) {
@@ -108,8 +113,18 @@ function redirect($url) {
   return [
     'log' => $url,
     'payload' => function () use ($url) {
-      header("Location: " . $url);
-      exit();
+      $is_ajax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') == 'XMLHttpRequest';
+
+      if ($is_ajax) {
+        header('X-Redirect-To: ' . $url);
+        echo '';
+        exit;
+      }
+
+      else {
+        header('Location: ' . $url);
+        exit;
+      }
     }
   ];
 }

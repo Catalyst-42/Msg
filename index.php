@@ -31,6 +31,7 @@ if (str_starts_with($key, $skip_log . ' ')) {
 
 $is_action = false;
 $key_type = '';
+$action = '';
 
 foreach (array_keys($action_keys) as $action) {
   if ($key == $action || str_starts_with($key, $action . ' ')) {
