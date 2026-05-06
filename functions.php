@@ -2,7 +2,7 @@
 
 direct_access_gate('functions.php', 'f(x, y, z) = cos(x)*sin(y) + cos(y)*sin(z) + cos(z)*sin(x) = 0');
 
-function direct_access_gate($filename, $message) {
+function direct_access_gate(string $filename, string $message) {
   $active_file = basename($_SERVER['SCRIPT_FILENAME'] ?? '');
 
   // Exit on direct access
@@ -43,7 +43,7 @@ function return_with($message = '') {
   exit;
 }
 
-function check_file($filename) {
+function check_file(string $filename) {
   global $files_dir;
   $filepath = $files_dir . $filename;
 
@@ -54,7 +54,7 @@ function check_file($filename) {
   }
 }
 
-function return_file($filename) {
+function return_file(string $filename) {
   global $files_dir;
   $filepath = $files_dir . $filename;
 
@@ -69,7 +69,7 @@ function return_file($filename) {
 }
 
 // Helpers
-function format_bytes($bytes, $lang = 'ru') {
+function format_bytes(int $bytes, $lang = 'ru') {
   if ($lang == 'ru') {
     $units = ['Б', 'КБ', 'МБ', 'ГБ'];
   } else {
@@ -86,17 +86,25 @@ function format_bytes($bytes, $lang = 'ru') {
   return round($bytes) . ' ' . $units[$index];
 }
 
-function choice($array) {
+function choice(array $array) {
   return $array[mt_rand(0, count($array) - 1)];
 }
 
-function is_natural($value): bool {
+function is_positive(mixed $value): bool {
+  return filter_var(
+    $value,
+    FILTER_VALIDATE_INT,
+    ['options' => ['min_range' => 0]]
+  ) !== false;
+}
+
+function is_natural(mixed $value): bool {
   $int = filter_var($value, FILTER_VALIDATE_INT);
   return $int !== false && $int > 0;
 }
 
 // Dynamic function helpers
-function create_response($message,  $log = null) {
+function create_response(string $message,  $log = null) {
   if ($log == null) {
     $log = $message;
   }
@@ -109,7 +117,7 @@ function create_response($message,  $log = null) {
   ];
 }
 
-function redirect($url) {
+function redirect(string $url) {
   return [
     'log' => $url,
     'payload' => function () use ($url) {
