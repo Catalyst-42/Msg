@@ -23,9 +23,17 @@ $templates = [
 
   <title>MSG</title>
 
+  <link rel="icon" type="image/png" href="icon/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="icon/favicon.svg" />
+  <link rel="shortcut icon" href="icon/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="icon/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-title" content="Msg" />
+  <link rel="manifest" href="icon/site.webmanifest" />
+
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-</head>
+  </head>
 
 <body class="bg-dark">
   <div class="container d-flex justify-content-center align-items-center vh-100 novalidate">
